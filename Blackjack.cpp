@@ -7,7 +7,7 @@ using namespace std;
 float x[52];
 
 //shuffle.
-void xipai(float *a,float *b)
+void shuffle(float *a,float *b)
 {
 	int i,j;
 	for (i = 0; i < 4; i++)
@@ -18,7 +18,7 @@ void xipai(float *a,float *b)
 }
 
 //deal.
-int fapai(float * s)
+int GetCards(float * s)
 {
 	int seed,i;
 	seed = time(0);
@@ -33,7 +33,7 @@ int fapai(float * s)
 }
 
 //get the cards.
-void paihao(const int y)
+void CardsNumber(const int y)
 {
 	switch (y%4)
 	{
@@ -58,7 +58,7 @@ int player(float *score)
 	int a[15],i=1,f;
 	string q;
 	cout << "Player phase" << endl << "Player got the cards :";
-	a[0] = fapai(score); paihao(a[0]); a[1] = fapai(score); paihao(a[1]);
+	a[0] = GetCards(score); CardsNumber(a[0]); a[1] = GetCards(score); CardsNumber(a[1]);
 	cout << endl;
 	while (1)
 	{
@@ -73,10 +73,10 @@ int player(float *score)
 		if (f) 
 		{ 
 			cout << "One more card :";
-			a[++i]=fapai(score); 
+			a[++i]=GetCards(score); 
 			for (f = 0; f<i; f++)
-				paihao(a[f]);
-			paihao(a[i]);
+				CardsNumber(a[f]);
+			CardsNumber(a[i]);
 			cout << endl;
 			if (*score > 21) return 0;
 		}
@@ -90,14 +90,14 @@ int ai(const float scorep, const int np,float *score)
 {
 	int a[15],i=1,n;
 	cout << "Computer phase" << endl << "Computer got the cards :";
-	a[0] = fapai(score); paihao(a[0]); a[1] = fapai(score); paihao(a[1]);
+	a[0] = GetCards(score); CardsNumber(a[0]); a[1] = GetCards(score); CardsNumber(a[1]);
 	cout << endl;
 	while (*score<scorep||(*score==scorep&&i+1<np))
 	{
 		cout << "One more card :";
-		a[++i] = fapai(score);
+		a[++i] = GetCards(score);
 		for (n = 0; n <= i; n++)
-			paihao(a[n]);
+			CardsNumber(a[n]);
 		cout << endl;
 		if (*score>21) return 0;
 	}
@@ -115,12 +115,12 @@ int main()
 {
 	float sp, sai;
 	int np, nai,f=0;
-	string q;
+	string q, c;
 	do
 	{
 		while (1)
 		{
-			xipai(&sp, &sai);
+			shuffle(&sp, &sai);
 			np = player(&sp);
 			if (!np) { cout << "You lost." << endl << endl; break; }
 			nai = ai(sp, np, &sai);
@@ -131,10 +131,16 @@ int main()
 		cout << "Continue?(y/n): ";
 		while (1)
 		{
-			cin >> q;
-			if (q != "Y" && q != "y" && q != "N" && q != "n"){cout << "Illegal input! Try again :";}
-			else if (q == "y" || q == "Y") { f = 1; break; }
-			else if (q == "n" || q == "N") { f = 0; break; }
+			try{
+			cin >> c;
+			if("y" == c || "n" == c || "Y" == c || "N" == c){
+				return c[0];
+			}
+			throw 1;
+			}
+			catch(int i){
+				cout << "Your input is illegal! Pleas try again: ";
+			}
 		}
 		
 	}
